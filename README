@@ -1,0 +1,6 @@
+Sample crontab that 
+runs hive.sh every 5 minutes
+records 30 seconds of video every 30 minutes
+
+Cut and paste these entries into cron using something like:
+crontab -e
