@@ -1,0 +1,32 @@
+#
+# Check hive instruments every 5 minutes
+0,5,10,15,20,25,30,35,40,45,50,55 * * * * /home/hivetool/hive.sh
+#
+# Check the server status
+0,5,10,15,20,25,30,35,40,45,50,55 * * * * /home/hivetool/server_status.sh > /var/www/htdocs/server_status.txt
+#
+# grab a frame and record it as a jpg
+4,9,14,19,24,29,34,39,44,49,54,59 * * * * /bin/timeout 60 /home/hivetool/grab_frame.sh 2> /home/hivetool/grab_frame.cron
+#
+# generate daily graph for hive at midnight
+0 0 * * * /var/www/htdocs/graph_hive_variable.pl -m -o /var/www/htdocs/daily_filtered -h 300
+0 0 * * * /var/www/htdocs/graph_hive_variable.pl -mr -o /var/www/htdocs/daily_raw -h 300
+#
+# generate wide graph with all the data at 5 minutes before midnight
+55 23 * * * /var/www/htdocs/graph_hive_variable.pl -o /var/www/htdocs/all_filtered
+55 23 * * * /var/www/htdocs/graph_hive_variable.pl -r -o /var/www/htdocs/all_raw
+#
+# record 60 seconds of audio stream at 4 am, 10 am, 4 pm and 10 pm
+#0 4,10,16,22 * * * streamripper localhost:8000/hive1.ogg -l 60 -s -a /var/www/htdocs/audio/hive1_%D
+#
+# record 60 seconds of audio stream at 10:05 10:10 10:15 etc
+#5,10,15,20,25,30,35,40,45,50,55 10 * * * streamripper localhost:8000/hive1.ogg -l 60 -s -a /var/www/htdocs/audio/hive1_%D
+#
+# record 30 seconds of video every 30 minutes
+0,30  7,8,9,10,11,12,13,14,15,16,17 * * * /bin/timeout 60 /home/paul/rh 1> /home/paul/rh.cron
+#
+# email me computer status at 6 pm                                                                                                                                                  
+0 18 * * * /home/hivetool/ssmtp_test3 1> /dev/null                                                                                                                                  
+#                                                                                                                                                                                   
+# email me hive  status every 24 hours (6 am)                                                                                                                                       
+0 6 * * * /home/hivetool/send_email.pl 1> /dev/null                                                                                                                                 
